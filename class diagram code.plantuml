@@ -1,0 +1,25 @@
+@startuml
+skinparam classAttributeIconSize 0
+abstract class bot_controls {
+    +forward(uint_32 t)
+    +right(uint_32 t)
+    +left(uint_32 t)
+    +stop()
+}
+class bot {
+    +dance()
+}
+class server {
+    +find_stains()
+    +find_bot()
+    +create_commands()
+}
+class camera {
+    +take_photo()
+}
+entity user {}
+user - camera : >>requests>>
+camera - server : >>informs>>
+server - bot : >>instructs>>
+bot <|- bot_controls
+@enduml
