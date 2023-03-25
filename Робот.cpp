@@ -1,8 +1,8 @@
-﻿#include <iostream>
+#include <iostream>
 #include <fstream>
 using namespace std;
 
-enum EState { EWork, Egraffity, Erotate, Emove };
+enum EState { EWork, Egraffity, Erotate, Emove, Efinish, Edance };
 
 class Sender {
 
@@ -13,6 +13,9 @@ public:
 	void send_Moving() {
 		cout << "Moving" << endl;
 	}
+	void send_Dancing() {
+		cout << "Dancing" << endl;
+	}
 };
 
 class Detector {
@@ -21,11 +24,11 @@ public:
 		cin >> a;
 		return a;
 	}
-	bool angle(float betta) {
+	float angle(float betta) {
 		cin >> betta;
 		return betta;
 	}
-	bool distance(float dist) {
+	float distance(float dist) {
 		cin >> dist;
 		return dist;
 	}
@@ -36,17 +39,17 @@ class Robot {
 	Detector det;
 	Sender send;
 	const float a = 5, b = 10;
-	bool f = false;
+	bool quit = false;
 
 public:
 	Robot() {
 		state = EWork;
-
 	}
 	void Events() {
 		switch (state) {
 		case EWork:
 			if (det.graffity_exist()) state = Egraffity;
+			else state = Edance;
 			break;
 		case Egraffity:
 			if (det.angle(a)) state = Erotate;
@@ -60,12 +63,18 @@ public:
 			send.send_Moving();
 			state = EWork;
 			break;
+		case Edance:
+			send.send_Dancing();
+			state = Efinish;
+		case Efinish:
+			quit = true;
+
 		}
 	}
 	void Run() {
-		while (!f) Events();
+		while (!quit) Events();
 		cout << "End" << endl;
-		f = false;
+		quit = false;
 	}
 };
 
