@@ -66,9 +66,10 @@ public:
 		case Edance:
 			send.send_Dancing();
 			state = Efinish;
+			break;
 		case Efinish:
 			quit = true;
-
+			break;
 		}
 	}
 	void Run() {
