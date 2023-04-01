@@ -2,18 +2,21 @@
 #include <fstream>
 using namespace std;
 
-enum EState { EWork, Egraffity, Erotate, Emove, Efinish, Edance };
+enum EState { Edetect, Ework, Erotate, Emove, Eclean, Efinish, Edance };
 
 class Sender {
 
 public:
-	void send_Rotate() {
+	void send_rotate() {
 		cout << "Rotating" << endl;
 	}
-	void send_Moving() {
+	void send_moving() {
 		cout << "Moving" << endl;
 	}
-	void send_Dancing() {
+	void send_cleaning() {
+		cout << "Cleaning" << endl;
+	}
+	void send_dancing() {
 		cout << "Dancing" << endl;
 	}
 };
@@ -21,14 +24,17 @@ public:
 class Detector {
 public:
 	bool graffity_exist(bool a) {
+		cout << "Is there any graffiti?\n";
 		cin >> a;
 		return a;
 	}
-	float angle(float betta) {
-		cin >> betta;
-		return betta;
+	float angle(float beta) {
+		cout << "What angle should the robot rotate at?\n";
+		cin >> beta;
+		return beta;
 	}
 	float distance(float dist) {
+		cout << "What distance should the robot move?\n";
 		cin >> dist;
 		return dist;
 	}
@@ -39,50 +45,56 @@ class Robot {
 	Detector det;
 	Sender send;
 	const float a = 5, b = 10;
-	bool quit = false;
+	bool end = false;
 
 public:
 	Robot() {
-		state = EWork;
+		state = Edetect;
 	}
-	void Events() {
+	void events() {
 		switch (state) {
-		case EWork:
-			if (det.graffity_exist()) state = Egraffity;
+		case Edetect:
+			if (det.graffity_exist(a)) state = Ework;
 			else state = Edance;
 			break;
-		case Egraffity:
+		case Ework:
 			if (det.angle(a)) state = Erotate;
 			else if (det.distance(b)) state = Emove;
+			else state = Eclean;
 			break;
 		case Erotate:
-			send.send_Rotate();
-			state = EWork;
+			send.send_rotate();
+			if (det.distance(b)) state = Emove;
+			else state = Eclean;
 			break;
 		case Emove:
-			send.send_Moving();
-			state = EWork;
+			send.send_moving();
+			state = Eclean;
+			break;
+		case Eclean:
+			send.send_cleaning();
+			state = Edetect;
 			break;
 		case Edance:
-			send.send_Dancing();
+			send.send_dancing();
 			state = Efinish;
 			break;
 		case Efinish:
-			quit = true;
+			end = true;
 			break;
 		}
 	}
-	void Run() {
-		while (!quit) Events();
+	void run() {
+		while (!end) events();
 		cout << "End" << endl;
-		quit = false;
 	}
 };
 
 int main() {
-	bool t = true;
+	bool quit = false;
 	Robot bot;
-	while (t) {
-		bot.Run();
+	while (!quit){
+		bot.run();
+		quit = true;
 	}
 }
