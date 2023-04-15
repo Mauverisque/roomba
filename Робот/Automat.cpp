@@ -2,7 +2,7 @@
 #include <fstream>
 using namespace std;
 
-enum EState { Edetect, Ework, Erotate, Emove, Eclean, Efinish, Edance };
+enum EState { EDetect, EWork, ERotate, EMove, EClean, EFinish, EDance };
 
 class Sender {
 
@@ -49,37 +49,37 @@ class Robot {
 
 public:
 	Robot() {
-		state = Edetect;
+		state = EDetect;
 	}
 	void events() {
 		switch (state) {
-		case Edetect:
-			if (det.graffity_exist(a)) state = Ework;
-			else state = Edance;
+		case EDetect:
+			if (det.graffity_exist(a)) state = EWork;
+			else state = EDance;
 			break;
-		case Ework:
-			if (det.angle(a)) state = Erotate;
-			else if (det.distance(b)) state = Emove;
-			else state = Eclean;
+		case EWork:
+			if (det.angle(a)) state = ERotate;
+			else if (det.distance(b)) state = EMove;
+			else state = EClean;
 			break;
-		case Erotate:
+		case ERotate:
 			send.send_rotate();
-			if (det.distance(b)) state = Emove;
-			else state = Eclean;
+			if (det.distance(b)) state = EMove;
+			else state = EClean;
 			break;
-		case Emove:
+		case EMove:
 			send.send_moving();
-			state = Eclean;
+			state = EClean;
 			break;
-		case Eclean:
+		case EClean:
 			send.send_cleaning();
-			state = Edetect;
+			state = EDetect;
 			break;
-		case Edance:
+		case EDance:
 			send.send_dancing();
-			state = Efinish;
+			state = EFinish;
 			break;
-		case Efinish:
+		case EFinish:
 			end = true;
 			break;
 		}
